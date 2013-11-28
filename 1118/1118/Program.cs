@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace _1118
 {
@@ -12,8 +11,40 @@ namespace _1118
             var numbers = Console.ReadLine().Split(' ');
             var min = Convert.ToInt32(numbers[0]);
             var max = Convert.ToInt32(numbers[1]);
-            if (min < max/2) min = (int)Math.Ceiling((double)max/2);
-            Console.WriteLine(Enumerable.Range(min, max - min + 1).ToDictionary(n=>n,TrivialForNumber).OrderBy(kvp => kvp.Value).First().Key);
+            var minimalTrivial =  Double.MaxValue;
+            var minNumber = Int32.MaxValue;
+            if (min == 1)
+            {
+                Console.WriteLine("1");
+                return;
+            }
+            for (var i = max; i >= min; i--)
+            {
+                if (isPrime(i))
+                {
+                    minNumber = i;
+                    break;
+                    
+                }
+                var triv = TrivialForNumber(i);
+                if (!(triv < minimalTrivial)) continue;
+                minNumber = i;
+                minimalTrivial = triv;
+            }
+            Console.WriteLine(minNumber);
+        }
+
+        static bool isPrime(int number)
+        {
+            var sqrt = Math.Sqrt(number);
+            var prime = true;
+            for (var i = 2; i <= sqrt; i++)
+            {
+                if (number%i != 0) continue;
+                prime = false;
+                break;
+            }
+            return prime;
         }
 
         static double TrivialForNumber(int number)
@@ -21,7 +52,7 @@ namespace _1118
             var sum = 0;
             var sqrt = number/2;
 
-            for (var i = 1; i <= sqrt; i++)
+            for (var i = 2; i <= sqrt; i++)
             {
                 if (number%i==0)
                 {
